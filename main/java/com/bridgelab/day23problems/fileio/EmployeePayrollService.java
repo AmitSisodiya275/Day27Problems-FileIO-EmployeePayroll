@@ -1,20 +1,32 @@
 package com.bridgelab.day23problems.fileio;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class EmployeePayrollService {
-	
+
+	public enum IOService {
+		CONSOLE_IO, FILE_IO, DB_IO, REST_IO
+	}
+
 	Scanner scanner = new Scanner(System.in);
-	ArrayList<EmployeePayroll> employeePayrollList = new ArrayList<>();
-	
+	List<EmployeePayroll> employeePayrollList = new ArrayList<>();
+
+	public EmployeePayrollService() {
+	}
+
+	public EmployeePayrollService(List<EmployeePayroll> employeePayrollList) {
+		this.employeePayrollList = employeePayrollList;
+	}
+
 	public static void main(String[] args) {
-		
+
 		EmployeePayrollService service = new EmployeePayrollService();
 		service.readEmployeePayrollData();
-		service.writeEmployeePayrollData();
+		service.writeEmployeePayrollData(IOService.CONSOLE_IO);
 	}
-	
+
 	public void readEmployeePayrollData() {
 		System.out.println("Enter Employee ID : ");
 		int id = scanner.nextInt();
@@ -25,9 +37,26 @@ public class EmployeePayrollService {
 		System.out.println("Details Added!");
 		employeePayrollList.add(new EmployeePayroll(id, name, salary));
 	}
-	
-	public void writeEmployeePayrollData() {
-		System.out.println("Writing Employee Payroll Data to the console : "+employeePayrollList);
+
+	public void writeEmployeePayrollData(IOService ioService) {
+		if (ioService.equals(IOService.CONSOLE_IO)) {
+			System.out.println("Writing Employee Payroll Data to the console : " + employeePayrollList);
+		} else if (ioService.equals(IOService.FILE_IO)) {
+			new EmployeePayrollFileIOService().writeEmployeePayrollData(employeePayrollList);
+		}
+	}
+
+	public void printData(IOService ioService) {
+		if (ioService.equals(IOService.FILE_IO)) {
+			new EmployeePayrollFileIOService().printData();
+		}
+	}
+
+	public long countEntries(IOService ioService) {
+		if (ioService.equals(IOService.FILE_IO)) {
+			return new EmployeePayrollFileIOService().countEntries();
+		}
+		return 0;
 	}
 
 }
